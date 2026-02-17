@@ -11,7 +11,7 @@
   #include <fcntl.h>
   #include <errno.h>
 #else
-  #errpr "Platform not supported"
+  #error "Platform not supported"
 #endif
 
 #include <stdio.h>
