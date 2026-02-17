@@ -1,13 +1,11 @@
 # mem_arena / sized_string Test Program
 
 This repository contains a small **C23 test program** used to validate a custom
-**memory arena allocator (`mem_arena`)** and a **fixed-size string utility (`sized_string`)**.
+**memory arena allocator (`mem_arena`)**, **sized string utilities (`sized_string`)**,
+and minimal **OS abstraction helpers (`os`)**.
 
-The code demonstrates:
-- Scratch arena allocation
-- Temporary arena lifetime management
-- String concatenation without heap allocation
-- Simple output using standard I/O
+The project is intentionally low-level and allocation-explicit, following a
+C-style design suitable for systems programming and engine-style codebases.
 
 ---
 
@@ -16,25 +14,31 @@ The code demonstrates:
 - **Linux only**
 - Tested with **GCC (C23)**
 
-No attempt has been made to support non-POSIX platforms at this stage.
+The OS layer currently assumes a POSIX-compatible environment.
 
 ---
 
-## Files Overview
+## Project Structure
 
 ```
 .
-├── mem_arena.h        # Arena allocator API
-├── sized_string.h    # Fixed-size string utilities
-├── test.c            # Test program
-└── README.md         # This file
+├── main.c              # Test / entry point
+├── mem_arena.c         # Arena allocator implementation
+├── mem_arena.h         # Arena allocator interface
+├── sized_string.c      # Sized string implementation
+├── sized_string.h      # Sized string interface
+├── os.c                # OS abstraction (memory, threads, etc.)
+├── os.h                # OS interface
+├── util.h              # Common utilities and helpers
+└── README.md           # This file
 ```
 
 ---
 
 ## Example Code
 
-The test program exercises scratch arenas and string concatenation:
+The test program demonstrates scratch arenas and arena-backed string
+concatenation without heap allocation.
 
 ```c
 #include "mem_arena.h"
@@ -74,25 +78,30 @@ main(void)
 
 ---
 
-## Key Concepts
+## Key Components
 
-### Memory Arenas
-- No `malloc`/`free` during normal operation
-- Linear allocation
-- Explicit lifetime control
-- Scratch arenas provide temporary allocation scopes
+### Memory Arenas (`mem_arena`)
+- Linear allocator
+- Explicit lifetime management
+- No implicit heap allocations
+- Scratch arenas for temporary allocation scopes
 
 ### Scratch Arenas
 - Allocated once at startup
-- Borrowed temporarily via `mem_arena_scratch_begin`
-- Automatically reclaimed with `mem_arena_scratch_end`
-- Conflict tracking supported (but optional)
+- Borrowed using `mem_arena_scratch_begin`
+- Returned using `mem_arena_scratch_end`
+- Optional conflict tracking to avoid arena aliasing
 
-### Sized Strings
-- Strings are `(pointer, length)` pairs
-- No implicit null-termination requirements
-- Concatenation allocates directly into an arena
-- No heap usage
+### Sized Strings (`sized_string`)
+- `(pointer, length)` string representation
+- No reliance on null-termination
+- Arena-backed concatenation
+- Zero heap usage
+
+### OS Layer (`os`)
+- Minimal platform abstraction
+- Centralized system calls
+- Designed to isolate platform-specific code
 
 ---
 
@@ -101,10 +110,15 @@ main(void)
 Example using GCC:
 
 ```bash
-gcc -std=c23 -Wall -Wextra -O2 test.c -o test
+gcc -std=c23 -Wall -Wextra -O2 \
+  main.c \
+  mem_arena.c \
+  sized_string.c \
+  os.c \
+  -o test
 ```
 
-Adjust include paths as needed if the headers are in separate directories.
+Adjust include paths if needed.
 
 ---
 
@@ -114,20 +128,17 @@ Adjust include paths as needed if the headers are in separate directories.
 - Predictable allocation behavior
 - No exceptions
 - No hidden allocations
-- C-style APIs with minimal abstraction overhead
-
-This code is intended for:
-- Low-level systems programming
-- Game engines
-- Tools where allocation control matters
+- Simple, inspectable C APIs
+- Suitable for game engines and systems tools
 
 ---
 
 ## Notes
 
-- This is **test code**, not a finalized API.
-- Error handling is minimal by design.
-- Thread-safety is not guaranteed unless explicitly stated in the allocator.
+- This is **test and development code**, not a finalized library.
+- Error handling is intentionally minimal.
+- Thread-safety is not guaranteed unless explicitly documented.
+- APIs may change freely.
 
 ---
 
