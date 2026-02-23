@@ -40,8 +40,8 @@ string8_array_t;
 enum 
 {
   StringMatchFlag_CaseInsensitive   = bit(0),
-  StringMatchFlag_SlashInsensitive  = bit(0),
-  StringMatchFlag_RightSideSloppy   = bit(1)
+  StringMatchFlag_SlashInsensitive  = bit(1),
+  StringMatchFlag_RightSideSloppy   = bit(2)
 };
 typedef u32 string_match_flag_t;
 

@@ -12,7 +12,7 @@ typedef uint16_t  u16;
 typedef uint32_t  u32;
 typedef uint64_t  u64;
 
-#define bit(n) ((n) << 0)
+#define bit(n) (1u << (n))
 
 #define kb(n) (((u64)(n)) << 10) 
 #define mb(n) (((u64)(n)) << 20) 

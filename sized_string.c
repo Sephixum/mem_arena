@@ -205,13 +205,13 @@ string8_match(string8_t a, string8_t b, string_match_flag_t flags)
 }
 
 string8_t
-upper_from_str8(mem_arena_t* arena, string8_t string)
+upper_from_string8(mem_arena_t* arena, string8_t string)
 {
   expect(arena != nullptr);
   string = push_string8_copy(arena, string);
-  for(u64 idx = 0; idx < string.size; idx += 1)
+  for_each(c, string)
   {
-    string.ptr[idx] = char_to_upper(string.ptr[idx]);
+    *c = char_to_upper(*c);
   }
   return string;
 }
@@ -254,7 +254,6 @@ push_string8fv(mem_arena_t* arena, char *fmt, va_list args)
   result.ptr[result.size] = '\0';
   va_end(args2);
   return result;
-
 }
 
 string8_t 

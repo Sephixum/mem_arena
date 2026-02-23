@@ -108,7 +108,7 @@ mem_arena_release_scratches(void);
 
 typedef struct mem_arena_scratch_conflict_info 
 {
-  mem_arena_t** conflicts;
+  mem_arena_t*const *const conflicts;
   u64           n;
 }
 mem_arena_scratch_conflict_info_t;
